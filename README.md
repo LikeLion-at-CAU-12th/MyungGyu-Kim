@@ -20,5 +20,12 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 
 [@kimm\_09](https://www.instagram.com/kimm_09/)
 
-1년동안 열심히 하겠습니다. 다들 파이팅-!!
-![12th\_mutsa](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/blob/git-session/12th_mutsa.gif)
+1년동안 열심히 하겠습니다. 다들 파이팅-!!<br>
+![12th\_mutsa](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/6dff2ae1-8364-44e9-8788-125972fffff8)
+
+`스탠다드 과제` 사진입니다
+![3주차_스탠다드과제](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/fe4a6008-b0ce-4fac-823d-85c65327544e)
+
+`챌린지 과제` 사진입니다
+![3주차_챌린지과제](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/dbeffc1c-f815-4517-851e-69c3b104adf9)
+
