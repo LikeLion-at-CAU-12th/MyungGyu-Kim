@@ -30,3 +30,9 @@ class Post(Basemodel):
     content = models.TextField(verbose_name="내용")
     writer = models.CharField(verbose_name="작성자", max_length=10)
     category = models.CharField(choices=CHOICES, max_length=10)
+
+class Comment(Basemodel):
+    id = models.AutoField(primary_key=True)
+    post_id = models.IntegerField(verbose_name="포스트ID")
+    writer = models.CharField(verbose_name="작성자", max_length=10)
+    content = models.TextField(verbose_name="댓글내용")
