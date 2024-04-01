@@ -34,7 +34,7 @@ class Post(Basemodel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(verbose_name="제목", max_length=20)
     content = models.TextField(verbose_name="내용")
-    writer = models.CharField(verbose_name="작성자", max_length=10)
+    writer = models.IntegerField(verbose_name="작성자")
     category = models.CharField(choices=CHOICES, max_length=10)
     # 다:다 관계를 표현할 때는 ManyToManyField() 사용하기
     hashtag = models.ManyToManyField(Hashtag, blank=True, null=True)
@@ -42,8 +42,8 @@ class Post(Basemodel):
 # Comment도 작성, 수정 일시를 필요로 하기 때문에 Basemodel 상속 받음.
 class Comment(Basemodel):
     id = models.AutoField(primary_key=True)
-    post_id = models.IntegerField(verbose_name="포스트ID")
-    writer = models.CharField(verbose_name="작성자", max_length=10)
+    post_id = models.ForeignKey(Post, verbose_name="포스트ID", on_delete=models.CASCADE)
+    writer = models.IntegerField(verbose_name="작성자")
     content = models.TextField(verbose_name="댓글내용")
 
 # 중간 테이블을 직접 만들어서 사용하는 경우 ForeignKey로 참조 설정을 해줘야 함.
