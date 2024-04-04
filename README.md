@@ -41,3 +41,9 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 `4주차 챌린지 과제` admin 페이지 사진입니다<br>
 ![4주차_챌린지과제_admin페이지](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/856e49e9-45eb-4073-9631-d0896284f0c5)
 
+`5주차 스탠다드 과제` 댓글 조회 사진입니다<br>
+![5주차_스탠다드과제_댓글조회](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/c60572cd-6fe5-4a4c-822b-9737d9e06edb)
+
+`5주차 스탠다드 과제` 최근 게시글 조회 사진입니다<br>
+![5주차_스탠다드과제_최근게시글조회](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/b74af5dd-ad85-4de3-b17f-29fd14453675)
+
