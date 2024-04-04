@@ -169,3 +169,7 @@ def post_detail(request, id):
             "message" : "게시글 삭제 성공",
             "data" : None
         })
+    
+@require_http_methods(["GET"])
+def post_comment_list(request):
+    
