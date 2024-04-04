@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 from .models import Student
 from posts.models import *
-import json
+import json, datetime
 
 def hello_world(request) :
     if request.method == "GET":
@@ -168,4 +168,86 @@ def post_detail(request, id):
             "status" : 200,
             "message" : "게시글 삭제 성공",
             "data" : None
+        })
+    
+@require_http_methods(["POST", "GET"])
+def comment_list(request, id):
+    
+    # 댓글 작성 api
+    if request.method == "POST":
+        body = json.loads(request.body.decode('utf-8'))
+
+        post = get_object_or_404(Post, pk=id)
+
+        new_comment = Comment.objects.create(
+            # 외래키로 연결된 컬럼의 경우 객체를 생성할 때 참조하는 테이블의 객체를 넣어줘야 함.
+            post_id = post,
+            writer = body['writer'],
+            content = body['content']
+        )
+
+        new_comment_json = {
+            "id" : new_comment.id,
+            # 외래키로 연결된 컬럼의 경우 객체가 저장되어 있음.
+            "post_id" : new_comment.post_id.id,
+            "writer" : new_comment.writer,
+            "content" : new_comment.content
+        }
+
+        return JsonResponse({
+            "status" : 200,
+            "message" : "댓글 게시 성공!",
+            "data" : new_comment_json
+        })
+
+    # 댓글 목록 조회 api.
+    if request.method == "GET":
+        post = get_object_or_404(Post, pk=id)
+        comment_all = Comment.objects.filter(post_id=post)
+
+        comment_all_json = []
+
+        for comment in comment_all:
+            comment_json = {
+                "id" : comment.id,
+                "post_id" : comment.post_id.id,
+                "writer" : comment.writer,
+                "content" : comment.content
+            }
+
+            comment_all_json.append(comment_json)
+        
+        return JsonResponse({
+            "status" : 200,
+            "message" : "게시글 댓글 목록 조회 성공!",
+            "data" : comment_all_json
+        })
+    
+@require_http_methods(["GET"])
+def recent_post_list(request):
+
+    if request.method == "GET":
+        # datetime library를 import해서 검색할 기간의 시작과 끝을 설정.
+        start_date = datetime.date(2024, 4, 4)
+        end_date = datetime.date(2024, 4, 10)
+        # {컬럼명}__range의 범위를 설정하고 filter로 해당하는 객체를 가져와서 created_at 순으로 정렬하고 순서 반전.
+        post_all = Post.objects.filter(updated_at__range=(start_date, end_date)).order_by('created_at').reverse()
+
+        post_all_json = []
+
+        for post in post_all:
+            post_json = {
+                "id" : post.id,
+                "title" : post.title,
+                "writer" : post.writer,
+                "content" : post.content,
+                "category" : post.category
+            }
+
+            post_all_json.append(post_json)
+
+        return JsonResponse({
+            "status" : 200,
+            "message" : "최근 일주일 간 작성된 게시글 목록 조회 성공",
+            "data" : post_all_json
         })
