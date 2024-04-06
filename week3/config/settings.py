@@ -35,6 +35,12 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+# 이미지 파일 경로 설정.
+# MEDIA_URL: 각 media 파일에 대한 URL Prefix. 필드명. url 속성에 의해서 참조되는 설정.
+# MEDIA_ROOT: 파일필드를 통한 저장 시에, 실제 파일을 저장할 ROOT 경로.
+MEDIA_URL = '/media/'		# ex) /media/photo1.png
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
