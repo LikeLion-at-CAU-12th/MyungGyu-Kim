@@ -22,6 +22,9 @@ class Hashtag(models.Model):
     tag_no = models.AutoField(primary_key=True)
     name = models.CharField(verbose_name="태그명", max_length=30)
 
+    def __str__(self):
+        return self.name
+
 # Basemodel을 상속하면서 created_at, updated_at 컬럼을 추가로 상속 받음.
 class Post(Basemodel):
 
@@ -50,3 +53,13 @@ class Comment(Basemodel):
 # class Post_tag(models.Model):
 #     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 #     tag_no = models.ForeignKey(Hashtag, on_delete=models.CASCADE)
+
+class Image(models.Model):
+    post_id = models.ForeignKey(Post, verbose_name="포스트ID", on_delete=models.CASCADE)
+    # (1) 저장경로 : MEDIA_ROOT/post/xxx.png
+    	#     DB필드 : MEDIA_URL/post/xxx.png' 문자열 저장
+    # image = models.ImageField(blank=True, upload_to='post')
+
+    # (2) 저장경로 : MEDIA_ROOT/post/20210901/xxx.png
+    	#     DB필드 :  'MEDIA_URL/post/20210901/xxx.png' 문자열 저장
+    image = models.ImageField(blank=True, null=True, upload_to='post/%Y%m%d')
