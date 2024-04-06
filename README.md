@@ -47,3 +47,9 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 `5주차 스탠다드 과제` 최근 게시글 조회 사진입니다<br>
 ![5주차_스탠다드과제_최근게시글조회](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/b74af5dd-ad85-4de3-b17f-29fd14453675)
 
+`5주차 챌린지 과제` 게시글에 이미지를 추가한 ERD 사진입니다<br>
+![5주차_챌린지과제_ERD](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/ac9f3feb-801b-4c8a-9146-2b7125fa2077)
+
+`5주차 챌린지 과제` 이미지를 포함한 게시글을 게시한 postman 사진입니다<br>
+![5주차_챌린지과제_postman](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/841d5b27-341b-4a84-afcb-8823f0c5eabf)
+
