@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:id>', post_detail, name = 'post_detail'),
     path('<int:id>/comment', comment_list, name='comment_list'),
     path('recent', recent_post_list, name='recent_post_list'),
+    path('image', update_image, name='update_image'),
 ]
