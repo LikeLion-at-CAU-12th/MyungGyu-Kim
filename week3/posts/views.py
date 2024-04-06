@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-from .models import Student
+# from .models import Student
 from posts.models import *
 import json, datetime
 
@@ -16,32 +16,32 @@ def hello_world(request) :
 def index(request):
     return render(request, 'index.html')
 
-def introduction(request):
-    if request.method == "GET":
-        return JsonResponse({
-            'status' : 200,
-            'success' : True,
-            'message' : '메시지 전달 성공 !', 
-            'data' : [
-                {
-                    "name" : "김명규",
-                    "age" : 24,
-                    "major" : "CSE"
-                },
-                {
-                    "name" : "이영주",
-                    "age" : 24,
-                    "major" : "Department of Chinese Language and Literature"
-                }
-            ]
-        },
-        json_dumps_params={'ensure_ascii': False})
+# def introduction(request):
+#     if request.method == "GET":
+#         return JsonResponse({
+#             'status' : 200,
+#             'success' : True,
+#             'message' : '메시지 전달 성공 !', 
+#             'data' : [
+#                 {
+#                     "name" : "김명규",
+#                     "age" : 24,
+#                     "major" : "CSE"
+#                 },
+#                 {
+#                     "name" : "이영주",
+#                     "age" : 24,
+#                     "major" : "Department of Chinese Language and Literature"
+#                 }
+#             ]
+#         },
+#         json_dumps_params={'ensure_ascii': False})
     
-def student_view(request):
-    students = Student.objects.all()
-    me = students[0]
-    my_duo = students[1]
-    return render(request, 'student.html', {'me' : me, 'my_duo' : my_duo})
+# def student_view(request):
+#     students = Student.objects.all()
+#     me = students[0]
+#     my_duo = students[1]
+#     return render(request, 'student.html', {'me' : me, 'my_duo' : my_duo})
 
 @require_http_methods(["GET"])
 def get_post_detail(request, id):
@@ -64,13 +64,12 @@ def get_post_detail(request, id):
 def post_list(request):
 
     if request.method == "POST":
-        body = json.loads(request.body.decode('utf-8'))
-
+        
         new_post = Post.objects.create(
-            writer = body['writer'],
-            title = body['title'],
-            content = body['content'],
-            category = body['category']
+            writer = request.POST.get('writer'),
+            title = request.POST.get('title'),
+            content = request.POST.get('content'),
+            category = request.POST.get('category')
         )
 
         new_post_json = {
@@ -81,15 +80,24 @@ def post_list(request):
             "category" : new_post.category
         }
 
-        # response = Post.objects.filter(id=4).delete()
-        # # response= new_post.delete()
-        # return JsonResponse({
-        #     "entity": response
-        # })
+        image_file = request.FILES.get("image")
+        new_image_json = {}
+        if image_file is not None:
+            new_image = Image.objects.create(
+                post_id = new_post,
+                image=image_file
+                )
+
+            new_image_json = {
+                "post_id" : new_image.post_id.id,
+                "image_url" : new_image.image.url
+            }
+
         return JsonResponse({
             "status" : 200,
             "message" : "게시글 생성 성공",
-            "data" : new_post_json
+            "post_data" : new_post_json,
+            "image_data" : new_image_json
         })
     
     if request.method == "GET":
@@ -250,4 +258,28 @@ def recent_post_list(request):
             "status" : 200,
             "message" : "최근 일주일 간 작성된 게시글 목록 조회 성공",
             "data" : post_all_json
+        })
+
+# 이미지 파일 업로드 테스트 용 임시 api.
+@require_http_methods(["POST"])
+def update_image(request):
+    
+    if request.method == "POST":
+        image_file = request.FILES.get('image')
+
+        new_image = Image.objects.create(
+            # 항상 id가 1인 Post 객체를 참조하는 Image 객체를 생성함.
+            post_id = Post.objects.get(id=1),
+            image = image_file
+        )
+
+        new_image_json = {
+            "post_id" : new_image.post_id.id,
+            "image_url" : new_image.image.url
+        }
+
+        return JsonResponse({
+            "status" : 200,
+            "message" : "이미지 업로드 성공",
+            "data" : new_image_json
         })
