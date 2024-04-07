@@ -227,7 +227,7 @@ def comment_list(request, id):
 def recent_post_list(request):
 
     if request.method == "GET":
-        # 현재 시간 기준으로 일일일 전의 시간을 start_date로 지정.
+        # 현재 시간 기준으로 일주일 전의 시간을 start_date로 지정.
         start_date = datetime.datetime.now() - datetime.timedelta(weeks=1)
         # {컬럼명}__gte로 start_date보다 뒤에 만들어진 객체를 filter로 찾고 '-created_at'을 사용해서 정렬.
         post_all = Post.objects.filter(created_at__gte=start_date).order_by('-created_at')
