@@ -227,11 +227,10 @@ def comment_list(request, id):
 def recent_post_list(request):
 
     if request.method == "GET":
-        # datetime library를 import해서 검색할 기간의 시작과 끝을 설정.
-        start_date = datetime.date(2024, 4, 4)
-        end_date = datetime.date(2024, 4, 10)
-        # {컬럼명}__range의 범위를 설정하고 filter로 해당하는 객체를 가져와서 created_at 순으로 정렬하고 순서 반전.
-        post_all = Post.objects.filter(updated_at__range=(start_date, end_date)).order_by('created_at').reverse()
+        # 현재 시간 기준으로 일일일 전의 시간을 start_date로 지정.
+        start_date = datetime.datetime.now() - datetime.timedelta(weeks=1)
+        # {컬럼명}__gte로 start_date보다 뒤에 만들어진 객체를 filter로 찾고 '-created_at'을 사용해서 정렬.
+        post_all = Post.objects.filter(created_at__gte=start_date).order_by('-created_at')
 
         post_all_json = []
 
@@ -241,7 +240,8 @@ def recent_post_list(request):
                 "title" : post.title,
                 "writer" : post.writer,
                 "content" : post.content,
-                "category" : post.category
+                "category" : post.category,
+                "created_at" : post.created_at
             }
 
             post_all_json.append(post_json)
