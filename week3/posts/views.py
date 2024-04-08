@@ -102,6 +102,7 @@ def post_list(request):
     
     if request.method == "GET":
         post_all = Post.objects.all()
+        image_all = Image.objects.all()
 
         post_json_all = []
 
@@ -113,8 +114,17 @@ def post_list(request):
                 "content" : post.content,
                 "category" : post.category
             }
+
+            # Post 게시글에 이미지가 있는 경우 함께 조회.
+            i = 1
+            images = Image.objects.filter(post_id=post)
+            for image in images:
+                post_json["image" + str(i)] = image.image.url
+                i += 1
             
             post_json_all.append(post_json)
+            
+            
         
         return JsonResponse({
             "status" : 200,
@@ -135,6 +145,12 @@ def post_detail(request, id):
             "content" : post.content,
             "category" : post.category
         }
+
+        i = 1
+        images = Image.objects.filter(post_id=post)
+        for image in images:
+            post_json["image" + str(i)] = image.image.url
+            i += 1
 
         return JsonResponse({
             "status" : 200,
