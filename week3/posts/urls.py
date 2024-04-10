@@ -8,4 +8,6 @@ urlpatterns = [
     # path('<int:id>', get_post_detail, name='게시글 조회'),
     path('', post_list, name = 'post_list'),
     path('<int:id>', post_detail, name = 'post_detail'),
+    path('<int:id>/comment', comment_list, name='comment_list'),
+    path('recent', recent_post_list, name='recent_post_list'),
 ]
