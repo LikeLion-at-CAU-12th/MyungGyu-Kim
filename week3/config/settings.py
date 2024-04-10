@@ -45,7 +45,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# 모든 Host에 대해서 허용.
+# 배포 시에는 따로 설정하기.
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -64,7 +66,7 @@ PROJECT_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-
+    'corsheaders'
 ]
 
 
@@ -80,6 +82,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [ 
+    # 리액트가 대체로 사용하는 포트 번호 3000
+    # 협업 시 에러 방지를 위해서 3000으로.
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = "config.urls"
