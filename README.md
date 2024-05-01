@@ -53,3 +53,6 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 `5주차 챌린지 과제` 이미지를 포함한 게시글을 게시한 postman 사진입니다<br>
 ![5주차_챌린지과제_postman](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/841d5b27-341b-4a84-afcb-8823f0c5eabf)
 
+`6주차 스탠다드 과제` 서버의 로그를 확인한 사진입니다<br>
+![6주차_스탠다드과제_nohup out](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/aaff3a00-6570-4fc2-99cd-4c82f776ca2d)
+
