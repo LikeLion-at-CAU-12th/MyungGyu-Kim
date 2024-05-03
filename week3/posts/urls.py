@@ -16,5 +16,4 @@ urlpatterns = [
     path('<int:id>/', PostDetail.as_view()),
     path('comment/', CommentDetail.as_view()),
     path('comment/<int:id>/', CommentDetail.as_view()),
-    path('comment/<int:post_id>/<int:comment_id>/', CommentDetail.as_view()),
 ]
