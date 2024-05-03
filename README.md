@@ -23,36 +23,9 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 1년동안 열심히 하겠습니다. 다들 파이팅-!!<br>
 ![12th\_mutsa](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/6dff2ae1-8364-44e9-8788-125972fffff8)
 
-`스탠다드 과제` 사진입니다
-![3주차_스탠다드과제](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/fe4a6008-b0ce-4fac-823d-85c65327544e)
-
-`챌린지 과제` 사진입니다
-![3주차_챌린지과제](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/dbeffc1c-f815-4517-851e-69c3b104adf9)
-
-`4주차 스탠다드 과제` ERD 사진입니다<br>
-![4주차_스탠다드과제_ERD](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/4dfaa068-011c-47ab-aa22-f101b81eb568)
-
-`4주차 스탠다드 과제` admin 페이지 사진입니다<br>
-![4주차_스탠다드과제_admin페이지](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/849bdfd9-e362-47a8-989c-37917b0155cd)
-
-`4주차 챌린지 과제` ERD 사진입니다<br>
-![4주차_챌린지과제_ERD](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/8b2b75d2-3b26-4a50-a1d4-76550bcab3e8)
-
-`4주차 챌린지 과제` admin 페이지 사진입니다<br>
-![4주차_챌린지과제_admin페이지](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/856e49e9-45eb-4073-9631-d0896284f0c5)
-
-`5주차 스탠다드 과제` 댓글 조회 사진입니다<br>
-![5주차_스탠다드과제_댓글조회](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/c60572cd-6fe5-4a4c-822b-9737d9e06edb)
-
-`5주차 스탠다드 과제` 최근 게시글 조회 사진입니다<br>
-![5주차_스탠다드과제_최근게시글조회](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/b74af5dd-ad85-4de3-b17f-29fd14453675)
-
-`5주차 챌린지 과제` 게시글에 이미지를 추가한 ERD 사진입니다<br>
-![5주차_챌린지과제_ERD](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/ac9f3feb-801b-4c8a-9146-2b7125fa2077)
-
-`5주차 챌린지 과제` 이미지를 포함한 게시글을 게시한 postman 사진입니다<br>
-![5주차_챌린지과제_postman](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/841d5b27-341b-4a84-afcb-8823f0c5eabf)
-
-`6주차 스탠다드 과제` 서버의 로그를 확인한 사진입니다<br>
-![6주차_스탠다드과제_nohup out](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/aaff3a00-6570-4fc2-99cd-4c82f776ca2d)
+`DRF API 스탠다드 과제` 사진입니다
+![DFR_스탠다드_get](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/6326c17d-3cb4-4407-8801-aad88546c455)<br>
+![DFR_스탠다드_post](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/faf796bc-d6e4-4293-ab3b-8b2ac957295b)<br>
+![DFR_스탠다드_put](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/9786d6b8-dcd9-4bc8-be59-a52bc3859893)<br>
+![DFR_스탠다드_delete](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/b4c46376-06d6-4d9d-b4f7-5cdb7f7dab8f)<br>
 
