@@ -66,7 +66,8 @@ PROJECT_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'corsheaders'
+    'corsheaders',
+    'rest_framework',
 ]
 
 
