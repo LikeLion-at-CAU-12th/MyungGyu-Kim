@@ -272,3 +272,68 @@ def update_image(request):
             "message" : "이미지 업로드 성공",
             "data" : new_image_json
         })
+    
+
+from .serializers import PostSerializer, CommentSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import Http404
+
+class PostList(APIView):
+    def post(self, request, format=None):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, format=None):
+        post = Post.objects.all()
+        serializer = PostSerializer(post, many=True)
+        return Response(serializer.data)
+    
+class PostDetail(APIView):
+    def get(self, request, id):
+        post = get_object_or_404(Post, id=id)
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
+    
+    def put(self, request, id):
+        post = get_object_or_404(Post, id=id)
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        post = get_object_or_404(Post, id=id)
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class CommentDetail(APIView):
+    def get(self, request, id):
+        comment = Comment.objects.filter(post_id_id=id)
+        serializer = CommentSerializer(comment, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, id):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, id):
+        comment = get_object_or_404(Comment, id=id)
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        comment = get_object_or_404(Comment, id=id)
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
