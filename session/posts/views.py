@@ -279,6 +279,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 from django.http import Http404
+from rest_framework.permissions import *
 
 class PostList(APIView):
     def post(self, request, format=None):
@@ -292,8 +293,6 @@ class PostList(APIView):
         post = Post.objects.all()
         serializer = PostSerializer(post, many=True)
         return Response(serializer.data)
-    
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 class PostDetail(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -341,27 +340,37 @@ class CommentDetail(APIView):
         comment = get_object_or_404(Comment, id=id)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+from config.permissions import *
 
 class PostListCreateGenericAPIView(generics.ListCreateAPIView):
+    permission_classes = [HasSecretKey]
+
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
 class PostDetailGenericAPIView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsWriterOrReadOnly]
+    
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     lookup_field = 'id'
 
 class CommentListCreateGenericAPIView(generics.ListCreateAPIView):
+    permission_classes = [HasSecretKey]
+
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
 class CommentDetailGenericAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsWriterOrReadOnly]
+
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     lookup_field = 'id'
 
 class CommentInPostGenericAPIView(generics.ListAPIView):
+    permission_classes = [HasSecretKey]
     serializer_class = CommentSerializer
 
     def get_queryset(self):
