@@ -23,14 +23,8 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 1년동안 열심히 하겠습니다. 다들 파이팅-!!<br>
 ![12th\_mutsa](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/6dff2ae1-8364-44e9-8788-125972fffff8)
 
-`DRF API 스탠다드 과제` 사진입니다
-![DFR_스탠다드_get](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/6326c17d-3cb4-4407-8801-aad88546c455)<br>
-![DFR_스탠다드_post](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/faf796bc-d6e4-4293-ab3b-8b2ac957295b)<br>
-![DFR_스탠다드_put](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/9786d6b8-dcd9-4bc8-be59-a52bc3859893)<br>
-![DFR_스탠다드_delete](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/b4c46376-06d6-4d9d-b4f7-5cdb7f7dab8f)<br>
-
-`7주차 챌린지 과제` 사진입니다
-![7주차_챌린지과제_PostDetail](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/ab4b45b3-11dd-4245-996e-30e0f6283e78)
-![7주차_챌린지과제_PostList](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/c75e11a2-afbd-4408-8038-93d7c7288bd1)
-![7주차_챌린지과제_Swagger](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/fb2b4085-7e16-41cb-98e5-a2d3c5632515)
+`8주차 스탠다드 과제`입니다
+![8주차_스탠다드과제_get](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/dd446b7b-8120-4086-8e76-9044f0a05542)
+![8주차_스탠다드과제_get_comment](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/8498fb70-f70c-4d2a-810f-f3a909346e6e)
+![8주차_스탠다드과제_get_comment_failed](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/217681c7-f8e9-45cc-a72b-2a68624ef017)
 
