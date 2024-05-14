@@ -177,6 +177,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # 기본적으로 Secret-Key를 가진 사용자만 인가
+    'DEFAULT_PERMISSION_CLASSES': [
+        'config.permissions.HasSecretKey',
+    ],
 }
 
 REST_USE_JWT = True
@@ -187,11 +191,4 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'TOKEN_USER_CLASS': 'accounts.User',
-}
-
-# 기본적으로 Secret-Key를 가진 사용자만 인가
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'config.permissions.HasSecretKey',
-    ],
 }
