@@ -64,3 +64,30 @@ class AuthSerializer(serializers.ModelSerializer):
         }
 
         return data
+
+class DeleteSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    restore_answer = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'restore_answer']
+
+    def validate(self, data):
+        username = data.get('username', None)
+        password = data.get('password', None)
+
+        user = User.get_user_or_none_by_username(username=username)
+
+        if user is None:
+            raise serializers.ValidationError('user account not exist')
+        else:
+            if not user.check_password(raw_password=password):
+                raise serializers.ValidationError('wrong password')
+            
+        data = {
+            'user' : user,
+        }
+        
+        return data

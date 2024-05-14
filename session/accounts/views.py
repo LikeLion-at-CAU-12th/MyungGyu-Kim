@@ -65,3 +65,25 @@ class LogoutView(APIView):
     def post(self, request):
         logout(request)
         return Response({"message": "로그아웃되었습니다."}, status=status.HTTP_200_OK)
+
+class DeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        serializer = DeleteSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            user = user.soft_delete(request.data.get('restore_answer'))
+            return Response({"message": "탈퇴되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RestoreView(APIView):
+    def post(self, request):
+        serializer = DeleteSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            user = user.restore(request.data.get('restore_answer'))
+            return Response({"message": "복구되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
