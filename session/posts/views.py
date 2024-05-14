@@ -344,8 +344,6 @@ class CommentDetail(APIView):
 from config.permissions import *
 
 class PostListCreateGenericAPIView(generics.ListCreateAPIView):
-    permission_classes = [HasSecretKey]
-
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -357,8 +355,6 @@ class PostDetailGenericAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
 
 class CommentListCreateGenericAPIView(generics.ListCreateAPIView):
-    permission_classes = [HasSecretKey]
-
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
@@ -370,7 +366,6 @@ class CommentDetailGenericAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
 
 class CommentInPostGenericAPIView(generics.ListAPIView):
-    permission_classes = [HasSecretKey]
     serializer_class = CommentSerializer
 
     def get_queryset(self):
