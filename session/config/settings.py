@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os, json
 from django.core.exceptions import ImproperlyConfigured
+from .permissions import HasSecretKey
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -181,6 +182,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # 기본적으로 Secret-Key를 가진 사용자만 인가
+    'DEFAULT_PERMISSION_CLASSES': [
+        'config.permissions.HasSecretKey',
+    ],
 }
 
 REST_USE_JWT = True
