@@ -66,6 +66,9 @@ class LogoutView(APIView):
         logout(request)
         return Response({"message": "로그아웃되었습니다."}, status=status.HTTP_200_OK)
 
+'''
+9주차 세션 내용.
+'''
 from pathlib import Path
 import os, json
 from django.core.exceptions import ImproperlyConfigured
