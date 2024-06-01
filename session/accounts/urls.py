@@ -13,8 +13,7 @@ urlpatterns = [
     
     path("google/login/", google_login, name="google_login"),
     path("google/callback/", google_callback, name="google_callback"),
-    path("google/login/finish/", GoogleLogin.as_view(), name="google_login_finish"),
-    path("google/join/", google_join, name="google_join"),
+    # path("google/login/finish/", GoogleLogin.as_view(), name="google_login_finish"),
 
     # 토큰
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
