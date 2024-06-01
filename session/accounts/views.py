@@ -96,6 +96,18 @@ from django.shortcuts import redirect
 from json import JSONDecodeError
 from django.http import JsonResponse
 import requests
+from allauth.socialaccount.models import SocialAccount
+from .serializers import OAuthSerializer
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.google import views as google_view
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
+
+import logging
+logger = logging.getLogger(__name__)
+
+BASE_URL = 'http://localhost:8000/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'account/google/callback/'
 
 def google_login(request):
    scope = GOOGLE_SCOPE_USERINFO        # + "https://www.googleapis.com/auth/drive.readonly" 등 scope 설정 후 자율적으로 추가
@@ -104,46 +116,137 @@ def google_login(request):
 def google_callback(request):
     code = request.GET.get("code")      # Query String 으로 넘어옴
     
+    # 코드를 담아서 토큰을 요청
     token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}")
+    # 토큰 요청에 대한 응답
     token_req_json = token_req.json()
     error = token_req_json.get("error")
 
+    # 토큰 요청에 대한 응답이 에러가 있으면 에러 발생
     if error is not None:
         raise JSONDecodeError(error)
 
+    # 토큰 요청에 대해 응답이 에러가 없으면 이메일을 요청
     google_access_token = token_req_json.get('access_token')
+
+    # 로그 추가: access_token과 code 값 확인
+    logger.info(f"Google Access Token: {google_access_token}")
+    logger.info(f"Google Code: {code}")
 
     email_response = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={google_access_token}")
     res_status = email_response.status_code
 
+    # 이메일 요청에 대한 응답이 200이 아니면 에러 발생
     if res_status != 200:
         return JsonResponse({'status': 400,'message': 'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
     
     email_res_json = email_response.json()
-    # email = email_res_json.get('email')
+    email = email_res_json.get('email')
 
-    serializer = OAuthSerializer(data=email_res_json)
-    try:
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data["user"]
-            access_token = serializer.validated_data["access_token"]
-            refresh_token = serializer.validated_data["refresh_token"]
-            res = JsonResponse(
-                {
-                    "user": {
-                        "id": user.id,
-                        "email": user.email,
+    serializer = OAuthSerializer(data={'email': email})
+
+    try:    
+        logger.info(f"Google Email: {email}")
+
+        user = User.objects.get(email=email)
+        token = RefreshToken.for_user(user)
+        refresh_token = str(token)
+        access_token = str(token.access_token)
+        social_user = SocialAccount.objects.get(user=user)
+    
+        if social_user.provider != "google":
+            return JsonResponse({"message": "google login required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data = {'access_token': google_access_token, 'code' : code}
+        accept = requests.post(f"{BASE_URL}account/google/login/finish/", data=data)
+
+        # 로그 추가: 요청 상태 코드 확인
+        logger.info(f"Request Status Code: {accept.status_code}")
+        logger.info(f"Request Response: {accept.text}")
+
+        accept_status = accept.status_code
+
+        if accept_status != 200:
+            logger.error(f"Failed to signup, status code: {accept_status}")
+            return JsonResponse({'status': 400, 'message': 'failed to signin'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        accept_json = accept.json()
+        accept_json.pop('user', None)
+        return JsonResponse(accept_json)
+
+    # 회원가입이 필요함
+    except User.DoesNotExist:
+        # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
+        logger.error("User does not exist")
+
+        # user = User.objects.create_user(email=email, username=email, password=None)
+        # social_account = SocialAccount.create(user=user, provider='google', uid=email)
+        # social_account.save()
+
+        data = {'access_token': google_access_token, 'code': code}
+        accept = requests.post(f"{BASE_URL}account/google/join/", data=data)
+        accept_status = accept.status_code
+
+        # 뭔가 중간에 문제가 생기면 에러
+        if accept_status != 200:
+            logger.error(f"Failed to signup, status code: {accept_status}")
+            return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
+
+        accept_json = accept.json()
+        accept_json.pop('user', None)
+        return JsonResponse(accept_json)
+    
+    # User는 있지만 Social Account가 없는 경우
+    except SocialAccount.DoesNotExist:
+        return JsonResponse({'error message' : 'social account not exist'}, status=status.HTTP_400_BAD_REQUEST)
+    
+class GoogleLogin(SocialLoginView):
+    adapter_class = google_view.GoogleOAuth2Adapter
+    callback_url = GOOGLE_CALLBACK_URI
+    client_class = OAuth2Client
+    serializer_class = SocialLoginSerializer
+
+def google_join(request):
+
+    if request.method == 'POST':
+        access_token = request.POST.get('access_token')
+        code = request.POST.get('code')
+
+        user_info = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
+        user_info_json = user_info.json()
+
+        try:
+            email = user_info_json.get('email', '')
+            username = user_info_json.get('name', email.split('@')[0])
+            user, created = User.objects.get_or_create(email=email, username=username)
+
+            if created:
+                user.set_unusable_password()
+                user.save()
+
+                SocialAccount.objects.create(user=user, provider='google', uid=username)
+
+                token = RefreshToken.for_user(user)
+                refresh_token = str(token)
+                access_token = str(token.access_token)
+
+                return JsonResponse({
+                    'user': {
+                        'id': user.id,
+                        'email': user.email,
                     },
-                    "message": "login success",
-                    "token": {
-                        "access_token": access_token,
-                        "refresh_token": refresh_token,
+                    'message': 'register success',
+                    'token': {
+                        'access_token': access_token,
+                        'refresh_token': refresh_token,
                     },
-                },
-                status=status.HTTP_200_OK,
-            )
-            res.set_cookie("access-token", access_token, httponly=True)
-            res.set_cookie("refresh-token", refresh_token, httponly=True)
-            return res
-    except:       # 회원가입이 필요함
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                }, status=status.HTTP_200_OK)
+            else:
+                return JsonResponse({'message': 'user already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            return JsonResponse({'error message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    else:
+        return JsonResponse({'error message': 'invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+    

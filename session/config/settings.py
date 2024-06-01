@@ -75,6 +75,9 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "rest_framework.authtoken",
 ]
 
 
@@ -201,3 +204,4 @@ SIMPLE_JWT = {
 ACCOUNT_EMAIL_REQUIRED = True            # email 필드 사용 o
 ACCOUNT_USERNAME_REQUIRED = True         # username 필드 사용 o
 ACCOUNT_AUTHENTICATION_METHOD = "email"
+SOCIALACCOUNT_AUTO_SIGNUP = True
