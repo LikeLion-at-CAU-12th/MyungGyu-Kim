@@ -189,11 +189,11 @@ def google_callback(request):
     except SocialAccount.DoesNotExist:
         return JsonResponse({'error message' : 'social account not exist'}, status=status.HTTP_400_BAD_REQUEST)
     
-class GoogleLogin(SocialLoginView):
-    adapter_class = google_view.GoogleOAuth2Adapter
-    callback_url = GOOGLE_CALLBACK_URI
-    client_class = OAuth2Client
-    serializer_class = SocialLoginSerializer
+# class GoogleLogin(SocialLoginView):
+#     adapter_class = google_view.GoogleOAuth2Adapter
+#     callback_url = GOOGLE_CALLBACK_URI
+#     client_class = OAuth2Client
+#     serializer_class = SocialLoginSerializer
 
 # 소셜 계정이 없는 경우 회원가입 진행
 # def google_join(request):
