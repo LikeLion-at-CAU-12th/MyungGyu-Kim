@@ -347,6 +347,15 @@ class PostListCreateGenericAPIView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    # POST 요청 시 serializer를 통해서 썸네일의 확장자가 png가 아닌 경우에만 저장.
+    def post(self, request, *args, **kwargs):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class PostDetailGenericAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsWriterOrReadOnly]
     
