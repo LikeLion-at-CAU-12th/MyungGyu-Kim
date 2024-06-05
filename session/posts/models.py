@@ -34,6 +34,7 @@ class Post(Basemodel):
     category = models.CharField(choices=CHOICES, max_length=10)
     # 다:다 관계를 표현할 때는 ManyToManyField() 사용하기
     hashtag = models.ManyToManyField(Hashtag, blank=True, null=True)
+    thumbnail = models.ImageField(null=True, blank=True, verbose_name="썸네일")
 
 # Comment도 작성, 수정 일시를 필요로 하기 때문에 Basemodel 상속 받음.
 class Comment(Basemodel):

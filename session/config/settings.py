@@ -39,8 +39,22 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # 이미지 파일 경로 설정.
 # MEDIA_URL: 각 media 파일에 대한 URL Prefix. 필드명. url 속성에 의해서 참조되는 설정.
 # MEDIA_ROOT: 파일필드를 통한 저장 시에, 실제 파일을 저장할 ROOT 경로.
-MEDIA_URL = '/media/'		# ex) /media/photo1.png
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'		# ex) /media/photo1.png
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+###AWS###
+AWS_ACCESS_KEY_ID = get_secret("AWS_ACCESS_KEY_ID") # .csv 파일에 있는 내용을 입력 Access key ID
+AWS_SECRET_ACCESS_KEY = get_secret("AWS_SECRET_ACCESS_KEY") # .csv 파일에 있는 내용을 입력 Secret access key
+AWS_REGION = 'ap-northeast-2'
+
+###S3###
+AWS_STORAGE_BUCKET_NAME = 'dding-bucket'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME,AWS_REGION)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' # 장고의 기본 파일저장소 위치를 S3버킷으로 지정.
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -78,6 +92,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "rest_framework.authtoken",
+    "storages",
 ]
 
 
@@ -130,13 +145,24 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# 기본적으로 sqlite3를 사용하도록 설정
+# DATABASES = {
+    # "default": {
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": BASE_DIR / "db.sqlite3",
+    # }
+# }
 
+DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.mysql',
+		'NAME': get_secret('DB_NAME'), # 'DB_NAME'은 secrets.json에 저장한 데이터베이스 이름
+		'USER': 'admin', # root로 접속하여 DB를 만들었다면 'root'
+		'PASSWORD': get_secret('DB_PASSWORD'), # 'DB_PASSWORD'는 secrets.json에 저장한 비밀번호
+		'HOST': get_secret('DB_HOST'), # 'DB_HOST'는 secrets.json에 저장한 호스트 주소
+		'PORT': '3306', # default mysql portnumber
+	}
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -186,9 +212,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     # 기본적으로 Secret-Key를 가진 사용자만 인가
-    'DEFAULT_PERMISSION_CLASSES': [
-        'config.permissions.HasSecretKey',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'config.permissions.HasSecretKey',
+    # ],
 }
 
 REST_USE_JWT = True
