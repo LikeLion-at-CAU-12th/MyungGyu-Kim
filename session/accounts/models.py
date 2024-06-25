@@ -8,7 +8,7 @@ class User(AbstractUser):
     is_deleted = models.BooleanField(default=False)
     # 삭제 일시
     deleted_at = models.DateTimeField(null=True, blank=True)
-    restore_answer = models.CharField(max_length=100, null=True, blank=True)
+    restore_answer = models.CharField(max_length=100)
 
     @staticmethod
     def get_user_or_none_by_username(username):

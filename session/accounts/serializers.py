@@ -6,16 +6,18 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
     email = serializers.CharField(required=True)
+    restore_answer = serializers(required=True)
 
     class Meta:
         model = User
-        fields = ['password', 'username', 'email']
+        fields = ['password', 'username', 'email', 'restore_answer']
 
     def save(self, request):
 
         user = User.objects.create(
             username = self.validated_data['username'],
             email = self.validated_data['email'],
+            restore_answer = self._validated_data['restore_answer']
         )
 
         # password 암호화
