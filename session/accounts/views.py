@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import *
+from config.permissions import IsAuthenticatedAndReturnUser
 
 class RegisterView(APIView):
     def post(self, request):
@@ -66,24 +67,30 @@ class LogoutView(APIView):
         logout(request)
         return Response({"message": "로그아웃되었습니다."}, status=status.HTTP_200_OK)
 
-class DeleteView(APIView):
-    permission_classes = [IsAuthenticated]
+class DeleteRestoreView(APIView):
 
     def delete(self, request):
-        serializer = DeleteSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data['user']
-            user = user.soft_delete(request.data.get('restore_answer'))
-            return Response({"message": "탈퇴되었습니다."}, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        self.check_permissions(request)
+        user = request.user
+        user = user.soft_delete()
+        return Response({"message": "탈퇴되었습니다."}, status=status.HTTP_200_OK)
 
-class RestoreView(APIView):
-    def post(self, request):
-        serializer = DeleteSerializer(data=request.data)
+    def post(self, request, id):
+        serializer = RestoreSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data['user']
             user = user.restore(request.data.get('restore_answer'))
             return Response({"message": "복구되었습니다."}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get_permissions(self):
+        if self.request.method == "DELETE":
+            return [IsAuthenticatedAndReturnUser()]
+        
+    def check_permissions(self, request):
+        for permission in self.get_permissions():
+            if not permission.has_permission(request, self):
+                self.permission_denied(
+                    request, message=getattr(permission, '로그인 후 시도해주세요.', None)
+                )

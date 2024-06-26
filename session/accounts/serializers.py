@@ -6,7 +6,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
     email = serializers.CharField(required=True)
-    restore_answer = serializers(required=True)
+    restore_answer = serializers.CharField(required=True)
 
     class Meta:
         model = User
@@ -67,14 +67,13 @@ class AuthSerializer(serializers.ModelSerializer):
 
         return data
 
-class DeleteSerializer(serializers.ModelSerializer):
+class RestoreSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
-    restore_answer = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'restore_answer']
+        fields = ['username', 'password']
 
     def validate(self, data):
         username = data.get('username', None)
@@ -93,3 +92,4 @@ class DeleteSerializer(serializers.ModelSerializer):
         }
         
         return data
+            

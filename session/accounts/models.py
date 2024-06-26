@@ -8,7 +8,7 @@ class User(AbstractUser):
     is_deleted = models.BooleanField(default=False)
     # 삭제 일시
     deleted_at = models.DateTimeField(null=True, blank=True)
-    restore_answer = models.CharField(max_length=100)
+    restore_answer = models.CharField(max_length=100, default="restore_answer")
 
     @staticmethod
     def get_user_or_none_by_username(username):
@@ -17,10 +17,9 @@ class User(AbstractUser):
         except:
             return None
 
-    def soft_delete(self, restore_answer):
+    def soft_delete(self):
         self.is_deleted = True
         self.deleted_at = timezone.now()
-        self.restore_answer = restore_answer
         self.save()
 
     def restore(self, restore_answer):
