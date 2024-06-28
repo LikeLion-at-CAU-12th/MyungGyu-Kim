@@ -27,5 +27,3 @@ vim이라는 에디터를 처음 사용해봤는데 생각보다 좋아요!
 ![9주차_스탠다드과제_login_success](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/23d6a853-41a2-4c7b-9015-2e70fa264580)
 ![9주차_스탠다드과제_social_account_not_exist](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/74fffa02-ae28-443c-8c1b-59764c4a2591)
 ![9주차_스탠다드과제_user_not_exist](https://github.com/LikeLion-at-CAU-12th/Myeonggyu-Kim/assets/128495883/86850da0-a040-408b-8d8c-04028b233f54)
-
-

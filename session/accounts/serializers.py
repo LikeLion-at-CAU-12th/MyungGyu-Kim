@@ -6,16 +6,18 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
     email = serializers.CharField(required=True)
+    restore_answer = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['password', 'username', 'email']
+        fields = ['password', 'username', 'email', 'restore_answer']
 
     def save(self, request):
 
         user = User.objects.create(
             username = self.validated_data['username'],
             email = self.validated_data['email'],
+            restore_answer = self._validated_data['restore_answer']
         )
 
         # password 암호화
@@ -90,4 +92,33 @@ class OAuthSerializer(serializers.ModelSerializer):
             "access_token": access_token,
         }
 
+        return data
+
+class RestoreSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    restore_answer = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'restore_answer']
+
+    def validate(self, data):
+        username = data.get('username', None)
+        password = data.get('password', None)
+        restore_answer = data.get('restore_answer', None)
+
+        user = User.get_user_or_none_by_username(username=username)
+
+        if user is None:
+            raise serializers.ValidationError('user account not exist')
+        else:
+            if not user.check_password(raw_password=password):
+                raise serializers.ValidationError('wrong password')
+            
+        data = {
+            'user' : user,
+            'restore_answer' : restore_answer,
+        }
+        
         return data

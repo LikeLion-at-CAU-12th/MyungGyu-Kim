@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import *
+from config.permissions import IsAuthenticatedAndReturnUser
 
 class RegisterView(APIView):
     def post(self, request):
@@ -240,3 +241,33 @@ def google_callback(request):
 #     else:
 #         return JsonResponse({'error message': 'invalid request'}, status=status.HTTP_400_BAD_REQUEST)
     
+class DeleteRestoreView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = RestoreSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            user.restore(serializer.validated_data['restore_answer'])
+            return Response({"message": "복구되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        self.check_permissions(request)
+        user = request.user
+        user = user.soft_delete()
+        return Response({"message": "탈퇴되었습니다."}, status=status.HTTP_200_OK)
+        
+    def get_permissions(self):
+        if self.request.method == "DELETE":
+            return [IsAuthenticatedAndReturnUser()]
+        else:
+            return []
+    
+    # delete 요청에서만 permission을 체크하기 위함.
+    def check_permissions(self, request):
+        for permission in self.get_permissions():
+            if not permission.has_permission(request, self):
+                self.permission_denied(
+                    request, message=getattr(permission, '로그인 후 시도해주세요.', None)
+                )
