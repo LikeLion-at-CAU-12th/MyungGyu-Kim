@@ -27,5 +27,4 @@ class User(AbstractUser):
             return False
         self.is_deleted = False
         self.deleted_at = None
-        self.restore_answer = None
         self.save()

@@ -70,14 +70,16 @@ class AuthSerializer(serializers.ModelSerializer):
 class RestoreSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
+    restore_answer = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'restore_answer']
 
     def validate(self, data):
         username = data.get('username', None)
         password = data.get('password', None)
+        restore_answer = data.get('restore_answer', None)
 
         user = User.get_user_or_none_by_username(username=username)
 
@@ -89,6 +91,7 @@ class RestoreSerializer(serializers.ModelSerializer):
             
         data = {
             'user' : user,
+            'restore_answer' : restore_answer,
         }
         
         return data

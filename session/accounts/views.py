@@ -69,25 +69,28 @@ class LogoutView(APIView):
 
 class DeleteRestoreView(APIView):
 
-    def delete(self, request):
+    def post(self, request, *args, **kwargs):
+        serializer = RestoreSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data['user']
+            user.restore(serializer.validated_data['restore_answer'])
+            return Response({"message": "복구되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
         self.check_permissions(request)
         user = request.user
         user = user.soft_delete()
         return Response({"message": "탈퇴되었습니다."}, status=status.HTTP_200_OK)
-
-    def post(self, request, id):
-        serializer = RestoreSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data['user']
-            user = user.restore(request.data.get('restore_answer'))
-            return Response({"message": "복구되었습니다."}, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def get_permissions(self):
         if self.request.method == "DELETE":
             return [IsAuthenticatedAndReturnUser()]
-        
+        else:
+            return []
+    
+    # delete 요청에서만 permission을 체크하기 위함.
     def check_permissions(self, request):
         for permission in self.get_permissions():
             if not permission.has_permission(request, self):
