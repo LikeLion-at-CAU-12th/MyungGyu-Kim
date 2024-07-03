@@ -6,6 +6,40 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import *
 from config.permissions import IsAuthenticatedAndReturnUser
+from django.contrib.auth  import logout
+from pathlib import Path
+import os, json
+from django.core.exceptions import ImproperlyConfigured
+
+from django.shortcuts import redirect
+from json import JSONDecodeError
+from django.http import JsonResponse
+import requests
+from allauth.socialaccount.models import SocialAccount
+from .serializers import OAuthSerializer
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.google import views as google_view
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+secret_file = os.path.join(BASE_DIR, "secrets.json")
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+GOOGLE_SCOPE_USERINFO = get_secret("GOOGLE_SCOPE_USERINFO")
+GOOGLE_REDIRECT = get_secret("GOOGLE_REDIRECT")
+GOOGLE_CALLBACK_URI = get_secret("GOOGLE_CALLBACK_URI")
+GOOGLE_CLIENT_ID = get_secret("GOOGLE_CLIENT_ID")
+GOOGLE_SECRET = get_secret("GOOGLE_SECRET")
 
 class RegisterView(APIView):
     def post(self, request):
@@ -57,8 +91,6 @@ class AuthView(APIView):
             return res
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-from django.contrib.auth  import logout
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -70,39 +102,6 @@ class LogoutView(APIView):
 '''
 9주차 세션 내용.
 '''
-from pathlib import Path
-import os, json
-from django.core.exceptions import ImproperlyConfigured
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-secret_file = os.path.join(BASE_DIR, "secrets.json")
-
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
-
-GOOGLE_SCOPE_USERINFO = get_secret("GOOGLE_SCOPE_USERINFO")
-GOOGLE_REDIRECT = get_secret("GOOGLE_REDIRECT")
-GOOGLE_CALLBACK_URI = get_secret("GOOGLE_CALLBACK_URI")
-GOOGLE_CLIENT_ID = get_secret("GOOGLE_CLIENT_ID")
-GOOGLE_SECRET = get_secret("GOOGLE_SECRET")
-
-from django.shortcuts import redirect
-from json import JSONDecodeError
-from django.http import JsonResponse
-import requests
-from allauth.socialaccount.models import SocialAccount
-from .serializers import OAuthSerializer
-from dj_rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from allauth.socialaccount.providers.google import views as google_view
-from dj_rest_auth.registration.serializers import SocialLoginSerializer
 
 BASE_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'account/google/callback/'
