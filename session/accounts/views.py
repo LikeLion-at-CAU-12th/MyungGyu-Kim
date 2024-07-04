@@ -41,6 +41,9 @@ GOOGLE_CALLBACK_URI = get_secret("GOOGLE_CALLBACK_URI")
 GOOGLE_CLIENT_ID = get_secret("GOOGLE_CLIENT_ID")
 GOOGLE_SECRET = get_secret("GOOGLE_SECRET")
 
+BASE_URL = 'http://localhost:8000/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'account/google/callback/'
+
 class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -99,13 +102,6 @@ class LogoutView(APIView):
         logout(request)
         return Response({"message": "로그아웃되었습니다."}, status=status.HTTP_200_OK)
 
-'''
-9주차 세션 내용.
-'''
-
-BASE_URL = 'http://localhost:8000/'
-GOOGLE_CALLBACK_URI = BASE_URL + 'account/google/callback/'
-
 def google_login(request):
    scope = GOOGLE_SCOPE_USERINFO        # + "https://www.googleapis.com/auth/drive.readonly" 등 scope 설정 후 자율적으로 추가
    return redirect(f"{GOOGLE_REDIRECT}?client_id={GOOGLE_CLIENT_ID}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
@@ -146,16 +142,7 @@ def google_callback(request):
             return JsonResponse({"message": "google login required"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.is_valid(raise_exception=True)
-        # data = {'access_token': access_token, 'code' : code}
-        # accept = requests.post(f"{BASE_URL}account/google/login/finish/", json=data)
-        # accept_status = accept.status_code
-
-        # if accept_status != 200:
-        #     return JsonResponse({'status': 400, 'message': 'failed to signin'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # accept_json = accept.json()
-        # accept_json.pop('user', None)
-        # return JsonResponse(accept_json)
         return JsonResponse({
             'message': 'login success',
             'user': {
@@ -168,77 +155,12 @@ def google_callback(request):
             }
             }, status=status.HTTP_200_OK)
 
-
-    # 회원가입이 필요함
     except User.DoesNotExist:
-        # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
-        # data = {'access_token': access_token, 'code': code}
-        # accept = requests.post(f"{BASE_URL}account/google/join/", data=data)
-        # accept_status = accept.status_code
-
-        # # 뭔가 중간에 문제가 생기면 에러
-        # if accept_status != 200:
-        #     return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
-
-        # accept_json = accept.json()
-        # accept_json.pop('user', None)
-        # return JsonResponse(accept_json)
         return JsonResponse({'error message' : 'user not exist'}, status=status.HTTP_400_BAD_REQUEST)
     
     # User는 있지만 Social Account가 없는 경우
     except SocialAccount.DoesNotExist:
         return JsonResponse({'error message' : 'social account not exist'}, status=status.HTTP_400_BAD_REQUEST)
-    
-# class GoogleLogin(SocialLoginView):
-#     adapter_class = google_view.GoogleOAuth2Adapter
-#     callback_url = GOOGLE_CALLBACK_URI
-#     client_class = OAuth2Client
-#     serializer_class = SocialLoginSerializer
-
-# 소셜 계정이 없는 경우 회원가입 진행
-# def google_join(request):
-
-#     if request.method == 'POST':
-#         access_token = request.POST.get('access_token')
-#         code = request.POST.get('code')
-
-#         user_info = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
-#         user_info_json = user_info.json()
-
-#         try:
-#             email = user_info_json.get('email', '')
-#             username = user_info_json.get('name', email.split('@')[0])
-#             user, created = User.objects.get_or_create(email=email, username=username)
-
-#             if created:
-#                 user.set_unusable_password()
-#                 user.save()
-
-#                 SocialAccount.objects.create(user=user, provider='google', uid=username)
-
-#                 token = RefreshToken.for_user(user)
-#                 refresh_token = str(token)
-#                 access_token = str(token.access_token)
-
-#                 return JsonResponse({
-#                     'user': {
-#                         'id': user.id,
-#                         'email': user.email,
-#                     },
-#                     'message': 'register success',
-#                     'token': {
-#                         'access_token': access_token,
-#                         'refresh_token': refresh_token,
-#                     },
-#                 }, status=status.HTTP_200_OK)
-#             else:
-#                 return JsonResponse({'message': 'user already exists'}, status=status.HTTP_400_BAD_REQUEST)
-            
-#         except Exception as e:
-#             return JsonResponse({'error message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-#     else:
-#         return JsonResponse({'error message': 'invalid request'}, status=status.HTTP_400_BAD_REQUEST)
     
 class DeleteRestoreView(APIView):
 
