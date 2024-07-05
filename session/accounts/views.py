@@ -21,6 +21,7 @@ from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
+from rest_framework.views import View
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 secret_file = os.path.join(BASE_DIR, "secrets.json")
@@ -43,6 +44,10 @@ GOOGLE_SECRET = get_secret("GOOGLE_SECRET")
 
 BASE_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'account/google/callback/'
+
+KAKAO_CLIENT_ID = get_secret("KAKAO_CLIENT_ID")
+KAKAO_CLIENT_SECRET = get_secret("KAKAO_CLIENT_SECRET")
+KAKAO_REDIRECT = get_secret("KAKAO_REDIRECT")
 
 class RegisterView(APIView):
     def post(self, request):
@@ -192,3 +197,49 @@ class DeleteRestoreView(APIView):
                 self.permission_denied(
                     request, message=getattr(permission, '로그인 후 시도해주세요.', None)
                 )
+
+class Kakao_login(View):
+    def get(self, request):
+        kakao_api = "https://kauth.kakao.com/oauth/authorize?response_type=code"
+        redirect_uri = "http://127.0.0.1:8000/account/kakao/callback/"
+        client_id = KAKAO_CLIENT_ID
+
+        return redirect(f"{kakao_api}&client_id={client_id}&redirect_uri={redirect_uri}&prompt=login")
+    
+class Kakao_callback(View):
+    def get(self, request):
+        error = request.GET.get("error")
+        if error is not None:
+            return JSONDecodeError(request.GET.get("error_description"))
+        
+        auth_code = request.GET.get("code")
+        data = {
+            "grant_type" : "authorization_code",
+            "client_id" : KAKAO_CLIENT_ID,
+            "redirection_uri" : KAKAO_REDIRECT,
+            "code" : auth_code
+        }
+
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+        }
+
+        kakao_token_api = f"https://kauth.kakao.com/oauth/token?client_secret={KAKAO_CLIENT_SECRET}"
+        response = requests.post(kakao_token_api, data=data, headers=headers)
+
+        if response.status_code == 200:
+            response_data = response.json()
+            access_token = response_data.get("access_token")
+
+            if access_token:
+                return JsonResponse({"access_token" : access_token})
+            else:
+                return JsonResponse({"error" : "access_token not found"}, status=400)
+        
+        else:
+            try:
+                error_data = response.json()
+            except ValueError:
+                error_data = response.text
+
+            return JsonResponse({"error": "Failed to obtain access token", "details": error_data}, status=response.status_code)

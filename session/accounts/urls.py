@@ -20,4 +20,8 @@ urlpatterns = [
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+
+    # 카카오 OAuth
+    path("kakao/login/", Kakao_login.as_view(), name="kakao_login"),
+    path("kakao/callback/", Kakao_callback.as_view(), name="kakao_callback"),
 ]
